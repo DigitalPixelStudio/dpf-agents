@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="topGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffeb3b" />
+      <stop offset="100%" stop-color="#ffc107" />
+    </linearGradient>
+    <linearGradient id="leftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5722" />
+      <stop offset="100%" stop-color="#d32f2f" />
+    </linearGradient>
+    <linearGradient id="rightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9800" />
+      <stop offset="100%" stop-color="#f57c00" />
+    </linearGradient>
+  </defs>
+  <!-- Top Face -->
+  <path d="M256 48 L416 140 L256 232 L96 140 Z" fill="url(#topGrad)" rx="24" />
+  <!-- Left Face -->
+  <path d="M96 172 L232 252 L232 436 L96 356 Z" fill="url(#leftGrad)" />
+  <!-- Right Face -->
+  <path d="M280 252 L416 172 L416 356 L280 436 Z" fill="url(#rightGrad)" />
+</svg>

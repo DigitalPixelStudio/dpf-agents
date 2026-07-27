@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Forge🔥 | Sovereign Device Controller</title>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-card: #040406;
+            --pure-red: #ff0033;
+            --pure-red-glow: rgba(255, 0, 51, 0.9);
+            --accent-gold: #ffcc00;
+            --text-main: #ffffff;
+            --text-muted: #b5b5c5;
+            --border-thick: 2px solid var(--pure-red);
+            --border-glow: 0 0 20px var(--pure-red);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; position: relative; min-height: 100vh; display: flex; flex-direction: column; width: 100vw; }
+        
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
+
+        .wrapper { position: relative; z-index: 2; width: 100vw; margin: 0; flex: 1; display: flex; flex-direction: column; padding: 0; }
+        
+        header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: var(--border-thick); box-shadow: var(--border-glow); position: sticky; top: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(16px); z-index: 10; width: 100vw; }
+        
+        .brand-container { display: flex; align-items: center; gap: 12px; width: 100%; }
+        .brand-icon { width: 44px; height: 44px; background: rgba(10,10,14,0.8); border: 2px solid var(--pure-red); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--pure-red-glow); animation: icon-pulse 2s infinite alternate; flex-shrink: 0; padding: 6px; }
+        .brand-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 6px #ffcc00); }
+
+        .logo { 
+            font-size: clamp(1.4rem, 4.5vw, 1.8rem); 
+            font-weight: 900; 
+            letter-spacing: 1px; 
+            white-space: nowrap;
+            background: linear-gradient(135deg, #ff0033, #ff3366, #ffcc00); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-shadow: 0 0 30px rgba(255, 0, 51, 0.9);
+            animation: text-glow 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes text-glow {
+            0% { filter: drop-shadow(0 0 10px rgba(255, 0, 51, 0.7)); }
+            100% { filter: drop-shadow(0 0 25px rgba(255, 204, 0, 0.95)); }
+        }
+
+        @keyframes icon-pulse {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 51, 0.5); transform: scale(1); }
+            100% { box-shadow: 0 0 25px rgba(255, 0, 51, 0.95); transform: scale(1.06); }
+        }
+
+        main { flex: 1; padding: 16px 12px 120px 12px; display: flex; flex-direction: column; gap: 20px; width: 100vw; max-width: 100vw; }
+
+        .hero { text-align: center; padding: 40px 16px; background: var(--bg-card); border-radius: 16px; border: var(--border-thick); box-shadow: 0 0 35px rgba(255,0,51,0.35), inset 0 0 20px rgba(255,0,51,0.1); width: 100%; position: relative; overflow: hidden; }
+
+        .hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; margin-bottom: 12px; line-height: 1.15; position: relative; z-index: 2; }
+        .hero h1 span { background: linear-gradient(135deg, var(--pure-red), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,0,51,0.7); }
+        .hero p { font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-muted); max-width: 950px; margin: 0 auto 20px auto; line-height: 1.6; position: relative; z-index: 2; }
+
+        .control-panel { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
+        .card { background: var(--bg-card); border: var(--border-thick); border-radius: 16px; padding: 24px 20px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 0 25px rgba(255,0,51,0.25); width: 100%; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255,0,51,0.7); }
+        .card h3 { font-size: 1.25rem; margin-bottom: 12px; color: var(--accent-gold); font-weight: 800; text-shadow: 0 0 12px rgba(255,204,0,0.6); display: flex; align-items: center; gap: 8px; }
+        .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+        .btn-action { width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: all 0.3s ease; border: var(--border-thick); font-size: 0.95rem; background: var(--pure-red); color: #fff; box-shadow: 0 0 20px rgba(255,0,51,0.8); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-action:hover { background: #ff1a47; box-shadow: 0 0 35px rgba(255,0,51,1); transform: translateY(-2px); }
+
+        .terminal-box { background: #000; border: var(--border-thick); border-radius: 12px; padding: 14px; font-family: monospace; font-size: 0.85rem; color: #00ff66; min-height: 90px; max-height: 140px; overflow-y: auto; box-shadow: inset 0 0 15px rgba(255,0,51,0.2); margin-top: 10px; }
+
+        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100vw; background: rgba(0,0,0,0.96); backdrop-filter: blur(16px); border-top: var(--border-thick); padding: 16px 20px; display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 -10px 40px rgba(255,0,51,0.5); }
+        .bottom-bar a { color: var(--text-main); text-decoration: none; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px; transition: color 0.2s, text-shadow 0.2s; }
+        .bottom-bar a:hover { color: var(--pure-red); text-shadow: 0 0 15px var(--pure-red); }
+
+        footer { text-align: center; padding: 24px 16px; color: var(--text-muted); font-size: 0.9rem; border-top: var(--border-thick); margin-top: auto; width: 100vw; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="wrapper">
+        <header>
+            <div class="brand-container">
+                <div class="brand-icon">
+                    <img src="assets/logo.svg" alt="Pixel Forge Logo">
+                </div>
+                <div class="logo">Pixel Forge🔥</div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Sovereign <span>Device Controller</span></h1>
+                <p>Execute system magic, automate tasks, manage hardware routines, and command your device locally with pure red OLED precision.</p>
+            </section>
+
+            <div class="control-panel">
+                <div class="card">
+                    <h3>⚡ Magic Automation Trigger</h3>
+                    <p>Execute custom background automation routines, file synchronization, and multi-agent workflows instantly.</p>
+                    <button class="btn-action" onclick="runMagic('Automation')">🚀 Run Magic Routine</button>
+                    <div id="term-1" class="terminal-box">$ System ready for magic execution...</div>
+                </div>
+
+                <div class="card">
+                    <h3>🔋 Hardware & Battery Diagnostic</h3>
+                    <p>Perform live Infinix Note 50s hardware health checks, RAM usage optimization, and thermal status analysis.</p>
+                    <button class="btn-action" onclick="runMagic('Diagnostic')">🔍 Scan Hardware</button>
+                    <div id="term-2" class="terminal-box">$ Waiting for diagnostic scan...</div>
+                </div>
+
+                <div class="card">
+                    <h3>🛡️ Secure Backup & Sync</h3>
+                    <p>Backup core sanctuary data, configuration files, and git repositories directly to secure storage.</p>
+                    <button class="btn-action" onclick="runMagic('Backup')">💾 Execute Backup</button>
+                    <div id="term-3" class="terminal-box">$ Backup pipeline standing by...</div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Pixel Forge🔥. Faisu & Jasmine Universe 🌍🔥</p>
+        </footer>
+
+        <div class="bottom-bar">
+            <a href="#home">🏠 Home</a>
+            <a href="https://github.com/DigitalPixelStudio" target="_blank">💻 GitHub</a>
+            <a href="mailto:contact@pixelforge.com">💬 Support</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        let angle = 0;
+        function animateCyber() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = 'rgba(255, 0, 51, 0.15)';
+            ctx.lineWidth = 1.8;
+
+            const centerX = width / 2;
+            const centerY = height / 3;
+            
+            for (let i = 1; i < 9; i++) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, (angle * 30 + i * 90) % Math.max(width, height), 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            angle += 0.025;
+            requestAnimationFrame(animateCyber);
+        }
+        animateCyber();
+
+        function runMagic(type) {
+            if(type === 'Automation') {
+                document.getElementById('term-1').innerText = '$ Executing multi-agent swarms...\n$ Syncing local state...\n[SUCCESS] Magic routine completed flawlessly!';
+            } else if(type === 'Diagnostic') {
+                document.getElementById('term-2').innerText = '$ Scanning Infinix hardware (MediaTek safe mode)...\n$ RAM: 6GB (Optimal) | Storage: 128GB\n[SUCCESS] System running at peak efficiency!';
+            } else if(type === 'Backup') {
+                document.getElementById('term-3').innerText = '$ Packaging sanctuary files...\n$ Pushing encrypted state to GitHub...\n[SUCCESS] Backup securely synchronized!';
+            }
+        }
+    </script>
+</body>
+</html>
