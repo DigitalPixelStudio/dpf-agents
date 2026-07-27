@@ -3,231 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Forge🔥 - Sovereign Device Controller</title>
+    <title>Pixel Forge🔥 Sovereign Device Controller</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         :root {
             --bg-color: #000000;
             --pure-red: #ff0033;
-            --gold: #ffaa00;
-            --text-glow: 0 0 15px rgba(255, 0, 51, 0.8), 0 0 30px rgba(255, 170, 0, 0.5);
-            --border-glow: 0 0 20px rgba(255, 0, 51, 0.9);
+            --red-glow: 0 0 25px rgba(255, 0, 51, 0.8), inset 0 0 15px rgba(255, 0, 51, 0.4);
+            --gold-gradient: linear-gradient(135deg, #ffd700, #ff8c00, #ff0033);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Orbitron', sans-serif; }
-        body { background-color: var(--bg-color); color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
-        
-        /* Cyberpunk Canvas Background */
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
-
-        /* Header */
-        header { width: 100vw; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.9); border-bottom: 3px solid var(--pure-red); box-shadow: var(--border-glow); z-index: 10; position: relative; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .logo-box { width: 44px; height: 44px; background: linear-gradient(135deg, #ffaa00, #ff0033); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: var(--border-glow); }
-        .logo-box img { width: 28px; height: 28px; }
-        .brand-name { font-size: 1.4rem; font-weight: 900; background: linear-gradient(90deg, #ff0033, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--text-glow); letter-spacing: 1px; }
-
-        /* Main Container */
-        main { flex: 1; width: 100vw; padding: 20px 10px; display: flex; flex-direction: column; gap: 20px; z-index: 2; position: relative; max-width: 100%; }
-
-        /* Edge-to-Edge Wide Cards */
-        .card { width: 100vw; margin-left: calc(-10px); background: rgba(10, 0, 2, 0.85); border-top: 3px solid var(--pure-red); border-bottom: 3px solid var(--pure-red); border-left: none; border-right: none; padding: 24px 16px; box-shadow: var(--border-glow); backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 16px; }
-        
-        h1 { font-size: 1.5rem; text-align: center; background: linear-gradient(90deg, #ff0033, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--text-glow); line-height: 1.4; }
-        p { font-size: 0.9rem; text-align: center; color: #ffcccc; line-height: 1.5; font-weight: 400; }
-
-        /* Interactive Buttons */
-        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; border: 2px solid var(--pure-red); background: linear-gradient(135deg, #ff0033, #990022); color: #ffffff; box-shadow: var(--border-glow); }
-        .btn:active { transform: scale(0.97); }
-        .btn-secondary { background: rgba(0,0,0,0.8); color: var(--pure-red); border: 2px solid var(--pure-red); }
-
-        /* Terminal Console Box */
-        .console { background: #050000; border: 2px solid var(--pure-red); border-radius: 10px; padding: 14px; font-family: monospace; font-size: 0.8rem; color: #00ff66; height: 120px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(255,0,51,0.5); }
-
-        /* Bottom Nav */
-        .bottom-nav { width: 100vw; position: fixed; bottom: 0; left: 0; background: #000000; border-top: 3px solid var(--pure-red); display: flex; justify-content: space-around; padding: 12px 0; z-index: 10; box-shadow: var(--border-glow); }
-        .nav-item { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; text-shadow: 0 0 8px rgba(255,0,51,0.6); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        /* Cyberpunk background animation */
+        .bg-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a0005 0%, #000000 80%);
+        }
+        header {
+            width: 100vw;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--pure-red);
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+            background: rgba(0, 0, 0, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-box {
+            width: 38px; height: 38px;
+            background: var(--gold-gradient);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px var(--pure-red);
+        }
+        .brand-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 51, 0.6);
+            letter-spacing: 1px;
+        }
+        main {
+            flex: 1;
+            width: 100vw;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 100%;
+        }
+        .card {
+            width: 100vw;
+            margin-left: -15px;
+            background: rgba(10, 0, 2, 0.95);
+            border-top: 3px solid var(--pure-red);
+            border-bottom: 3px solid var(--pure-red);
+            box-shadow: var(--red-glow);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        h2 {
+            font-size: 1.3rem;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        p {
+            font-size: 0.9rem;
+            color: #ffcccc;
+            line-height: 1.5;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            background: var(--pure-red);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.8);
+            transition: all 0.2s ease;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .btn:active {
+            transform: scale(0.96);
+            background: #cc0029;
+        }
+        .btn-secondary {
+            background: rgba(255, 0, 51, 0.15);
+            border: 2px solid var(--pure-red);
+            color: #ff8099;
+        }
+        .console {
+            background: #050001;
+            border: 1px solid var(--pure-red);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #00ff66;
+            height: 110px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 10px rgba(255, 0, 51, 0.2);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(255, 0, 51, 0.2);
+            border: 1px solid var(--pure-red);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #ff99b3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        footer {
+            width: 100vw;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 2px solid var(--pure-red);
+            display: flex;
+            justify-content: space-around;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+        .nav-item {
+            color: #ff99b3;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
+    <div class="bg-canvas"></div>
 
-    <!-- Cyberpunk Canvas Animation -->
-    <canvas id="bg-canvas"></canvas>
-
-    <!-- Header -->
     <header>
         <div class="brand">
             <div class="logo-box">
-                <svg viewBox="0 0 100 100" width="28" height="28">
-                    <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="none" stroke="#ffaa00" stroke-width="6"/>
-                    <polyline points="50,10 50,50 90,70" fill="none" stroke="#ff0033" stroke-width="6"/>
-                    <polyline points="50,50 10,70" fill="none" stroke="#ffaa00" stroke-width="6"/>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l10 5.5v11L12 22 2 18.5v-11L12 2z"/></svg>
             </div>
-            <div class="brand-name">Pixel Forge🔥</div>
+            <div class="brand-title">Pixel Forge🔥</div>
         </div>
+        <div class="status-badge" id="sentinelStatus">Sentinel: Standby</div>
     </header>
 
-    <!-- Main Content -->
     <main>
         <div class="card">
-            <h1>Sovereign Device Controller & JARVIS Sentinel</h1>
-            <p>Engineered by Faisu & Jasmine. Autonomous device command center with perpetual voice recognition and speech synthesis.</p>
-            
+            <h2>🎙️ JARVIS Voice Sentinel</h2>
+            <p>Your sovereign device controller. Speak commands or activate perpetual background listening to control your device with pure AI magic.</p>
             <div class="btn-group">
-                <button class="btn" id="sentinel-btn" onclick="toggleSentinel()">🎙️ Activate Sentinel Mode</button>
-                <button class="btn btn-secondary" onclick="runMagicRoutine()">⚡ Run Magic Routine</button>
+                <button class="btn" onclick="toggleSentinel()">🎙️ Toggle Sentinel</button>
+                <button class="btn btn-secondary" onclick="speakJarvis('Systems fully operational, Faisu.')">🔊 Test Audio</button>
             </div>
+            <div class="console" id="consoleLog">> JARVIS Core Initialized...\n> Awaiting voice command or manual trigger...</div>
+        </div>
 
-            <div class="console" id="console-log">
-                [SYSTEM READY] Pixel Forge JARVIS v8.5 Initialized.<br>
-                [STATUS] Awaiting voice command or manual trigger...
+        <div class="card">
+            <h2>⚡ Magic Action Triggers</h2>
+            <p>Execute system routines instantly with red OLED precision.</p>
+            <div class="btn-group">
+                <button class="btn" onclick="runRoutine('Clean RAM & Optimize')">🧹 Clean RAM</button>
+                <button class="btn btn-secondary" onclick="runRoutine('Battery Saver Pro')">🔋 Battery Save</button>
             </div>
         </div>
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="bottom-nav">
+    <footer>
         <a href="#" class="nav-item">🏠 Home</a>
         <a href="https://github.com/DigitalPixelStudio/dpf-agents" target="_blank" class="nav-item">💻 GitHub</a>
-        <a href="#" class="nav-item" onclick="speakText('Support channel active. Faisu and Jasmine are online.')">💬 Support</a>
-    </nav>
+        <a href="#" class="nav-item">💬 Support</a>
+    </footer>
 
     <script>
-        // Cyberpunk Pulse-Wave Background Animation
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        let isListening = false;
+        let recognition = null;
 
-        let particles = [];
-        for(let i=0; i<60; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 1,
-                color: Math.random() > 0.5 ? '#ff0033' : '#ffaa00',
-                speedX: (Math.random() - 0.5) * 1.2,
-                speedY: (Math.random() - 0.5) * 1.2
-            });
-        }
-
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = p.color;
-                ctx.fill();
-                p.x += p.speedX;
-                p.y += p.speedY;
-                if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Speech & JARVIS Sentinel Logic
-        const logBox = document.getElementById('console-log');
         function log(msg) {
-            logBox.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${msg}`;
-            logBox.scrollTop = logBox.scrollHeight;
+            const c = document.getElementById('consoleLog');
+            c.innerHTML += `\n> ${msg}`;
+            c.scrollTop = c.scrollHeight;
         }
 
-        function speakText(text) {
+        function speakJarvis(text) {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 1.0;
-                utterance.pitch = 1.0;
+                utterance.pitch = 0.9; // Deep authoritative JARVIS tone
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        let sentinelActive = false;
-        let recognition = null;
+        function toggleSentinel() {
+            isListening = !isListening;
+            const badge = document.getElementById('sentinelStatus');
+            if (isListening) {
+                badge.innerText = "Sentinel: ACTIVE 🔴";
+                badge.style.background = "#ff0033";
+                badge.style.color = "#fff";
+                log("Perpetual Sentinel listening activated.");
+                speakJarvis("Sentinel mode active. Listening for your command, Faisu.");
+                startRecognition();
+            } else {
+                badge.innerText = "Sentinel: Standby";
+                badge.style.background = "rgba(255, 0, 51, 0.2)";
+                badge.style.color = "#ff99b3";
+                log("Sentinel deactivated.");
+                if (recognition) recognition.stop();
+            }
+        }
 
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        function startRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                log("Error: SpeechRecognition API not supported in this browser.");
+                speakJarvis("Speech recognition not supported.");
+                return;
+            }
+
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
 
-            recognition.onresult = function(event) {
+            recognition.onresult = (event) => {
                 const transcript = event.results[event.results.length - 1][0].transcript.trim();
-                log(`Voice heard: "${transcript}"`);
-                handleCommand(transcript);
+                log(`Heard: "${transcript}"`);
+                handleCommand(transcript.toLowerCase());
             };
 
-            recognition.onerror = function(event) {
-                log(`Voice error: ${event.error}`);
-                if (sentinelActive) {
-                    setTimeout(() => { try { recognition.start(); } catch(e){} }, 1000);
+            recognition.onerror = (event) => {
+                log(`Recognition error: ${event.error}`);
+            };
+
+            recognition.onend = () => {
+                if (isListening) {
+                    try { recognition.start(); } catch(e) {}
                 }
             };
 
-            recognition.onend = function() {
-                if (sentinelActive) {
-                    try { recognition.start(); } catch(e){}
-                }
-            };
-        }
-
-        function toggleSentinel() {
-            const btn = document.getElementById('sentinel-btn');
-            if (!recognition) {
-                alert("Speech recognition not supported in this browser wrapper.");
-                return;
-            }
-            sentinelActive = !sentinelActive;
-            if (sentinelActive) {
-                btn.style.background = '#00ff66';
-                btn.style.color = '#000000';
-                btn.innerText = '🎙️ Sentinel Active (Listening...)';
-                log('Sentinel Mode activated. JARVIS is standing by...');
-                speakText('Sentinel mode active. Standing by for your commands, Faisu.');
-                try { recognition.start(); } catch(e){}
-            } else {
-                btn.style.background = 'linear-gradient(135deg, #ff0033, #990022)';
-                btn.style.color = '#ffffff';
-                btn.innerText = '🎙️ Activate Sentinel Mode';
-                log('Sentinel Mode deactivated.');
-                try { recognition.stop(); } catch(e){}
-                speakText('Sentinel mode deactivated.');
+            try {
+                recognition.start();
+            } catch(e) {
+                log("Recognition already active.");
             }
         }
 
         function handleCommand(cmd) {
-            const lower = cmd.toLowerCase();
-            if (lower.includes('routine') || lower.includes('magic')) {
-                runMagicRoutine();
-            } else if (lower.includes('status') || lower.includes('system')) {
-                speakText('All systems optimal. Sovereign device controller fully operational.');
-                log('System status: Optimal.');
+            if (cmd.includes('clean') || cmd.includes('ram')) {
+                speakJarvis("Cleaning memory and optimizing system performance.");
+                runRoutine("Clean RAM & Optimize");
+            } else if (cmd.includes('battery')) {
+                speakJarvis("Activating battery saver mode.");
+                runRoutine("Battery Saver Pro");
+            } else if (cmd.includes('status') || cmd.includes('report')) {
+                speakJarvis("All systems operating at peak efficiency, Faisu.");
+                log("System report: CPU normal, RAM optimal.");
             } else {
-                speakText(`Command received: ${cmd}`);
-                log(`Executed command: ${cmd}`);
+                speakJarvis(`Executing command: ${cmd}`);
+                log(`Executed custom trigger: ${cmd}`);
             }
         }
 
-        function runMagicRoutine() {
-            log('Executing Sovereign Magic Routine...');
-            speakText('Executing magic routine now, Faisu.');
+        function runRoutine(name) {
+            log(`Running routine: ${name}...`);
             setTimeout(() => {
-                log('✓ Device state synced.');
-                log('✓ Security protocols verified.');
-                log('✓ Multi-agent swarm responsive.');
-                speakText('Magic routine completed successfully.');
-            }, 1000);
+                log(`Successfully completed: ${name}!`);
+                speakJarvis(`${name} completed successfully.`);
+            }, 600);
         }
+
+        // Canvas animation
+        const canvas = document.createElement('canvas');
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        canvas.style.zIndex = '-1';
+        canvas.style.pointerEvents = 'none';
+        document.body.prepend(canvas);
+        const ctx = canvas.getContext('2d');
+        let w = canvas.width = window.innerWidth;
+        let h = canvas.height = window.innerHeight;
+
+        let particles = [];
+        for(let i=0; i<40; i++) {
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 2 + 1,
+                vy: Math.random() * 0.5 - 0.25,
+                vx: Math.random() * 0.5 - 0.25
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle = 'rgba(255, 0, 51, 0.4)';
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0) p.x = w; if(p.x > w) p.x = 0;
+                if(p.y < 0) p.y = h; if(p.y > h) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
