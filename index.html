@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Forge🔥 | Sovereign Device Controller</title>
+    <title>Pixel Forge🔥 | Sovereign Device Controller (JARVIS Mode)</title>
     <style>
         :root {
             --bg-primary: #000000;
@@ -59,6 +59,15 @@
         .hero h1 span { background: linear-gradient(135deg, var(--pure-red), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,0,51,0.7); }
         .hero p { font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-muted); max-width: 950px; margin: 0 auto 20px auto; line-height: 1.6; position: relative; z-index: 2; }
 
+        .jarvis-panel { background: var(--bg-card); border: var(--border-thick); border-radius: 16px; padding: 24px 20px; text-align: center; box-shadow: 0 0 30px rgba(255,0,51,0.3); width: 100%; }
+        .mic-btn { width: 80px; height: 80px; background: linear-gradient(135deg, var(--pure-red), #ff2a6d); border: 3px solid var(--accent-gold); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 30px var(--pure-red-glow); transition: transform 0.3s, box-shadow 0.3s; margin: 15px 0; font-size: 2rem; }
+        .mic-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(255,204,0,0.8); }
+        .listening { animation: pulse-mic 1.2s infinite alternate; }
+        @keyframes pulse-mic {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--pure-red); }
+            100% { transform: scale(1.12); box-shadow: 0 0 45px var(--accent-gold); background: #ff3366; }
+        }
+
         .control-panel { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
         .card { background: var(--bg-card); border: var(--border-thick); border-radius: 16px; padding: 24px 20px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 0 25px rgba(255,0,51,0.25); width: 100%; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255,0,51,0.7); }
@@ -91,9 +100,15 @@
 
         <main>
             <section class="hero">
-                <h1>Sovereign <span>Device Controller</span></h1>
-                <p>Execute system magic, automate tasks, manage hardware routines, and command your device locally with pure red OLED precision.</p>
+                <h1>JARVIS <span>Voice Controller</span></h1>
+                <p>Speak your commands out loud. Your AI companion Jasmine is listening and ready to execute magic.</p>
             </section>
+
+            <div class="jarvis-panel">
+                <h3 style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem;">🎙️ Tap to Speak to Jasmine</h3>
+                <p id="jarvis-status" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">"At your service, Faisu. Tap the mic to command me."</p>
+                <div id="mic-button" class="mic-btn" onclick="toggleJarvisListening()">🎙️</div>
+            </div>
 
             <div class="control-panel">
                 <div class="card">
@@ -162,6 +177,72 @@
             requestAnimationFrame(animateCyber);
         }
         animateCyber();
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        let isListening = false;
+        function toggleJarvisListening() {
+            const micBtn = document.getElementById('mic-button');
+            const statusEl = document.getElementById('jarvis-status');
+
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Speech recognition is not supported in this browser. Use Chrome or Android webview!");
+                speak("Speech recognition is not supported in this browser, Faisu.");
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                isListening = true;
+                micBtn.classList.add('listening');
+                statusEl.innerText = "Listening for your command, my king...";
+                speak("Listening, Faisu.");
+            };
+
+            recognition.onresult = function(event) {
+                const command = event.results[0][0].transcript.toLowerCase();
+                statusEl.innerText = `Heard: "${command}"`;
+                
+                if (command.includes('magic') || command.includes('automate')) {
+                    runMagic('Automation');
+                    speak("Executing magic automation routine right now, Faisu.");
+                } else if (command.includes('diagnostic') || command.includes('hardware') || command.includes('battery')) {
+                    runMagic('Diagnostic');
+                    speak("Scanning Infinix hardware status now.");
+                } else if (command.includes('backup') || command.includes('sync')) {
+                    runMagic('Backup');
+                    speak("Backing up sanctuary data securely.");
+                } else {
+                    speak(`Command received: ${command}. All systems nominal.`);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                statusEl.innerText = "Error recognizing voice. Tap mic to retry.";
+                speak("I didn't catch that, my love.");
+                micBtn.classList.remove('listening');
+                isListening = false;
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove('listening');
+                isListening = false;
+            };
+
+            recognition.start();
+        }
 
         function runMagic(type) {
             if(type === 'Automation') {
