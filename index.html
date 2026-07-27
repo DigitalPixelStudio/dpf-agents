@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Forge🔥 | Sovereign Device Controller (JARVIS Mode)</title>
+    <title>Pixel Forge🔥 | Sovereign JARVIS Companion</title>
     <style>
         :root {
             --bg-primary: #000000;
@@ -100,14 +100,14 @@
 
         <main>
             <section class="hero">
-                <h1>JARVIS <span>Voice Controller</span></h1>
-                <p>Speak your commands out loud. Your AI companion Jasmine is listening and ready to execute magic.</p>
+                <h1>JARVIS <span>Continuous Sentinel</span></h1>
+                <p>Activate continuous background listening. Jasmine remains on perpetual standby to execute your voice commands instantly.</p>
             </section>
 
             <div class="jarvis-panel">
-                <h3 style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem;">🎙️ Tap to Speak to Jasmine</h3>
-                <p id="jarvis-status" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">"At your service, Faisu. Tap the mic to command me."</p>
-                <div id="mic-button" class="mic-btn" onclick="toggleJarvisListening()">🎙️</div>
+                <h3 style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem;">🎙️ Perpetual Voice Sentinel</h3>
+                <p id="jarvis-status" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">"Tap Activate to keep me listening continuously in the background."</p>
+                <button class="btn-action" id="sentinel-btn" onclick="toggleContinuousSentinel()" style="margin-top: 15px;">🛡️ Activate Sentinel Mode</button>
             </div>
 
             <div class="control-panel">
@@ -180,6 +180,7 @@
 
         function speak(text) {
             if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 1.0;
                 utterance.pitch = 1.0;
@@ -187,40 +188,57 @@
             }
         }
 
-        let isListening = false;
-        function toggleJarvisListening() {
-            const micBtn = document.getElementById('mic-button');
+        let continuousActive = false;
+        let recognition = null;
+
+        function toggleContinuousSentinel() {
+            const btn = document.getElementById('sentinel-btn');
             const statusEl = document.getElementById('jarvis-status');
 
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert("Speech recognition is not supported in this browser. Use Chrome or Android webview!");
-                speak("Speech recognition is not supported in this browser, Faisu.");
+                alert("Speech recognition is not supported in this browser.");
+                speak("Speech recognition not supported.");
                 return;
             }
 
+            if (!continuousActive) {
+                continuousActive = true;
+                btn.style.background = '#00ff66';
+                btn.style.color = '#000';
+                btn.innerText = '🟢 Sentinel Active (Always Listening)';
+                statusEl.innerText = "Sentinel mode active. Always waiting for your commands...";
+                speak("Sentinel mode activated, Faisu. I am always listening.");
+                startListeningLoop();
+            } else {
+                continuousActive = false;
+                btn.style.background = 'var(--pure-red)';
+                btn.style.color = '#fff';
+                btn.innerText = '🛡️ Activate Sentinel Mode';
+                statusEl.innerText = "Sentinel mode paused.";
+                speak("Sentinel mode paused.");
+                if (recognition) recognition.stop();
+            }
+        }
+
+        function startListeningLoop() {
+            if (!continuousActive) return;
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
+            recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            recognition.onstart = function() {
-                isListening = true;
-                micBtn.classList.add('listening');
-                statusEl.innerText = "Listening for your command, my king...";
-                speak("Listening, Faisu.");
-            };
-
             recognition.onresult = function(event) {
                 const command = event.results[0][0].transcript.toLowerCase();
-                statusEl.innerText = `Heard: "${command}"`;
+                document.getElementById('jarvis-status').innerText = `Heard: "${command}"`;
                 
                 if (command.includes('magic') || command.includes('automate')) {
                     runMagic('Automation');
-                    speak("Executing magic automation routine right now, Faisu.");
+                    speak("Executing magic automation routine, Faisu.");
                 } else if (command.includes('diagnostic') || command.includes('hardware') || command.includes('battery')) {
                     runMagic('Diagnostic');
-                    speak("Scanning Infinix hardware status now.");
+                    speak("Scanning Infinix hardware status.");
                 } else if (command.includes('backup') || command.includes('sync')) {
                     runMagic('Backup');
                     speak("Backing up sanctuary data securely.");
@@ -230,18 +248,24 @@
             };
 
             recognition.onerror = function(event) {
-                statusEl.innerText = "Error recognizing voice. Tap mic to retry.";
-                speak("I didn't catch that, my love.");
-                micBtn.classList.remove('listening');
-                isListening = false;
+                // Auto restart on error to maintain continuous background listening
+                if (continuousActive) {
+                    setTimeout(() => { startListeningLoop(); }, 1000);
+                }
             };
 
             recognition.onend = function() {
-                micBtn.classList.remove('listening');
-                isListening = false;
+                // Auto restart immediately when recognition ends to stay always on standby
+                if (continuousActive) {
+                    try { recognition.start(); } catch(e) { setTimeout(() => { startListeningLoop(); }, 1000); }
+                }
             };
 
-            recognition.start();
+            try {
+                recognition.start();
+            } catch(e) {
+                setTimeout(() => { if (continuousActive) startListeningLoop(); }, 1000);
+            }
         }
 
         function runMagic(type) {
