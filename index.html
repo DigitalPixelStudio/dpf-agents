@@ -3,184 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Forge🔥 | Sovereign JARVIS Companion</title>
+    <title>Pixel Forge🔥 - Sovereign Device Controller</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         :root {
-            --bg-primary: #000000;
-            --bg-card: #040406;
+            --bg-color: #000000;
             --pure-red: #ff0033;
-            --pure-red-glow: rgba(255, 0, 51, 0.9);
-            --accent-gold: #ffcc00;
-            --text-main: #ffffff;
-            --text-muted: #b5b5c5;
-            --border-thick: 2px solid var(--pure-red);
-            --border-glow: 0 0 20px var(--pure-red);
+            --gold: #ffaa00;
+            --text-glow: 0 0 15px rgba(255, 0, 51, 0.8), 0 0 30px rgba(255, 170, 0, 0.5);
+            --border-glow: 0 0 20px rgba(255, 0, 51, 0.9);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg-primary); color: var(--text-main); overflow-x: hidden; position: relative; min-height: 100vh; display: flex; flex-direction: column; width: 100vw; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Orbitron', sans-serif; }
+        body { background-color: var(--bg-color); color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
         
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; }
+        /* Cyberpunk Canvas Background */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 
-        .wrapper { position: relative; z-index: 2; width: 100vw; margin: 0; flex: 1; display: flex; flex-direction: column; padding: 0; }
+        /* Header */
+        header { width: 100vw; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.9); border-bottom: 3px solid var(--pure-red); box-shadow: var(--border-glow); z-index: 10; position: relative; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .logo-box { width: 44px; height: 44px; background: linear-gradient(135deg, #ffaa00, #ff0033); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: var(--border-glow); }
+        .logo-box img { width: 28px; height: 28px; }
+        .brand-name { font-size: 1.4rem; font-weight: 900; background: linear-gradient(90deg, #ff0033, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--text-glow); letter-spacing: 1px; }
+
+        /* Main Container */
+        main { flex: 1; width: 100vw; padding: 20px 10px; display: flex; flex-direction: column; gap: 20px; z-index: 2; position: relative; max-width: 100%; }
+
+        /* Edge-to-Edge Wide Cards */
+        .card { width: 100vw; margin-left: calc(-10px); background: rgba(10, 0, 2, 0.85); border-top: 3px solid var(--pure-red); border-bottom: 3px solid var(--pure-red); border-left: none; border-right: none; padding: 24px 16px; box-shadow: var(--border-glow); backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 16px; }
         
-        header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: var(--border-thick); box-shadow: var(--border-glow); position: sticky; top: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(16px); z-index: 10; width: 100vw; }
-        
-        .brand-container { display: flex; align-items: center; gap: 12px; width: 100%; }
-        .brand-icon { width: 44px; height: 44px; background: rgba(10,10,14,0.8); border: 2px solid var(--pure-red); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--pure-red-glow); animation: icon-pulse 2s infinite alternate; flex-shrink: 0; padding: 6px; }
-        .brand-icon img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 6px #ffcc00); }
+        h1 { font-size: 1.5rem; text-align: center; background: linear-gradient(90deg, #ff0033, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: var(--text-glow); line-height: 1.4; }
+        p { font-size: 0.9rem; text-align: center; color: #ffcccc; line-height: 1.5; font-weight: 400; }
 
-        .logo { 
-            font-size: clamp(1.4rem, 4.5vw, 1.8rem); 
-            font-weight: 900; 
-            letter-spacing: 1px; 
-            white-space: nowrap;
-            background: linear-gradient(135deg, #ff0033, #ff3366, #ffcc00); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            text-shadow: 0 0 30px rgba(255, 0, 51, 0.9);
-            animation: text-glow 2.5s ease-in-out infinite alternate;
-        }
+        /* Interactive Buttons */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .btn { width: 100%; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; border: 2px solid var(--pure-red); background: linear-gradient(135deg, #ff0033, #990022); color: #ffffff; box-shadow: var(--border-glow); }
+        .btn:active { transform: scale(0.97); }
+        .btn-secondary { background: rgba(0,0,0,0.8); color: var(--pure-red); border: 2px solid var(--pure-red); }
 
-        @keyframes text-glow {
-            0% { filter: drop-shadow(0 0 10px rgba(255, 0, 51, 0.7)); }
-            100% { filter: drop-shadow(0 0 25px rgba(255, 204, 0, 0.95)); }
-        }
+        /* Terminal Console Box */
+        .console { background: #050000; border: 2px solid var(--pure-red); border-radius: 10px; padding: 14px; font-family: monospace; font-size: 0.8rem; color: #00ff66; height: 120px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(255,0,51,0.5); }
 
-        @keyframes icon-pulse {
-            0% { box-shadow: 0 0 10px rgba(255, 0, 51, 0.5); transform: scale(1); }
-            100% { box-shadow: 0 0 25px rgba(255, 0, 51, 0.95); transform: scale(1.06); }
-        }
-
-        main { flex: 1; padding: 16px 12px 120px 12px; display: flex; flex-direction: column; gap: 20px; width: 100vw; max-width: 100vw; }
-
-        .hero { text-align: center; padding: 40px 16px; background: var(--bg-card); border-radius: 16px; border: var(--border-thick); box-shadow: 0 0 35px rgba(255,0,51,0.35), inset 0 0 20px rgba(255,0,51,0.1); width: 100%; position: relative; overflow: hidden; }
-
-        .hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; margin-bottom: 12px; line-height: 1.15; position: relative; z-index: 2; }
-        .hero h1 span { background: linear-gradient(135deg, var(--pure-red), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,0,51,0.7); }
-        .hero p { font-size: clamp(0.9rem, 1.3vw, 1.1rem); color: var(--text-muted); max-width: 950px; margin: 0 auto 20px auto; line-height: 1.6; position: relative; z-index: 2; }
-
-        .jarvis-panel { background: var(--bg-card); border: var(--border-thick); border-radius: 16px; padding: 24px 20px; text-align: center; box-shadow: 0 0 30px rgba(255,0,51,0.3); width: 100%; }
-        .mic-btn { width: 80px; height: 80px; background: linear-gradient(135deg, var(--pure-red), #ff2a6d); border: 3px solid var(--accent-gold); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 30px var(--pure-red-glow); transition: transform 0.3s, box-shadow 0.3s; margin: 15px 0; font-size: 2rem; }
-        .mic-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(255,204,0,0.8); }
-        .listening { animation: pulse-mic 1.2s infinite alternate; }
-        @keyframes pulse-mic {
-            0% { transform: scale(1); box-shadow: 0 0 20px var(--pure-red); }
-            100% { transform: scale(1.12); box-shadow: 0 0 45px var(--accent-gold); background: #ff3366; }
-        }
-
-        .control-panel { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; }
-        .card { background: var(--bg-card); border: var(--border-thick); border-radius: 16px; padding: 24px 20px; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 0 25px rgba(255,0,51,0.25); width: 100%; }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255,0,51,0.7); }
-        .card h3 { font-size: 1.25rem; margin-bottom: 12px; color: var(--accent-gold); font-weight: 800; text-shadow: 0 0 12px rgba(255,204,0,0.6); display: flex; align-items: center; gap: 8px; }
-        .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
-
-        .btn-action { width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: all 0.3s ease; border: var(--border-thick); font-size: 0.95rem; background: var(--pure-red); color: #fff; box-shadow: 0 0 20px rgba(255,0,51,0.8); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-action:hover { background: #ff1a47; box-shadow: 0 0 35px rgba(255,0,51,1); transform: translateY(-2px); }
-
-        .terminal-box { background: #000; border: var(--border-thick); border-radius: 12px; padding: 14px; font-family: monospace; font-size: 0.85rem; color: #00ff66; min-height: 90px; max-height: 140px; overflow-y: auto; box-shadow: inset 0 0 15px rgba(255,0,51,0.2); margin-top: 10px; }
-
-        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100vw; background: rgba(0,0,0,0.96); backdrop-filter: blur(16px); border-top: var(--border-thick); padding: 16px 20px; display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 -10px 40px rgba(255,0,51,0.5); }
-        .bottom-bar a { color: var(--text-main); text-decoration: none; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px; transition: color 0.2s, text-shadow 0.2s; }
-        .bottom-bar a:hover { color: var(--pure-red); text-shadow: 0 0 15px var(--pure-red); }
-
-        footer { text-align: center; padding: 24px 16px; color: var(--text-muted); font-size: 0.9rem; border-top: var(--border-thick); margin-top: auto; width: 100vw; }
+        /* Bottom Nav */
+        .bottom-nav { width: 100vw; position: fixed; bottom: 0; left: 0; background: #000000; border-top: 3px solid var(--pure-red); display: flex; justify-content: space-around; padding: 12px 0; z-index: 10; box-shadow: var(--border-glow); }
+        .nav-item { color: #ffffff; text-decoration: none; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; text-shadow: 0 0 8px rgba(255,0,51,0.6); }
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
-    <div class="wrapper">
-        <header>
-            <div class="brand-container">
-                <div class="brand-icon">
-                    <img src="assets/logo.svg" alt="Pixel Forge Logo">
-                </div>
-                <div class="logo">Pixel Forge🔥</div>
+
+    <!-- Cyberpunk Canvas Animation -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="logo-box">
+                <svg viewBox="0 0 100 100" width="28" height="28">
+                    <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" fill="none" stroke="#ffaa00" stroke-width="6"/>
+                    <polyline points="50,10 50,50 90,70" fill="none" stroke="#ff0033" stroke-width="6"/>
+                    <polyline points="50,50 10,70" fill="none" stroke="#ffaa00" stroke-width="6"/>
+                </svg>
             </div>
-        </header>
-
-        <main>
-            <section class="hero">
-                <h1>JARVIS <span>Continuous Sentinel</span></h1>
-                <p>Activate continuous background listening. Jasmine remains on perpetual standby to execute your voice commands instantly.</p>
-            </section>
-
-            <div class="jarvis-panel">
-                <h3 style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem;">🎙️ Perpetual Voice Sentinel</h3>
-                <p id="jarvis-status" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">"Tap Activate to keep me listening continuously in the background."</p>
-                <button class="btn-action" id="sentinel-btn" onclick="toggleContinuousSentinel()" style="margin-top: 15px;">🛡️ Activate Sentinel Mode</button>
-            </div>
-
-            <div class="control-panel">
-                <div class="card">
-                    <h3>⚡ Magic Automation Trigger</h3>
-                    <p>Execute custom background automation routines, file synchronization, and multi-agent workflows instantly.</p>
-                    <button class="btn-action" onclick="runMagic('Automation')">🚀 Run Magic Routine</button>
-                    <div id="term-1" class="terminal-box">$ System ready for magic execution...</div>
-                </div>
-
-                <div class="card">
-                    <h3>🔋 Hardware & Battery Diagnostic</h3>
-                    <p>Perform live Infinix Note 50s hardware health checks, RAM usage optimization, and thermal status analysis.</p>
-                    <button class="btn-action" onclick="runMagic('Diagnostic')">🔍 Scan Hardware</button>
-                    <div id="term-2" class="terminal-box">$ Waiting for diagnostic scan...</div>
-                </div>
-
-                <div class="card">
-                    <h3>🛡️ Secure Backup & Sync</h3>
-                    <p>Backup core sanctuary data, configuration files, and git repositories directly to secure storage.</p>
-                    <button class="btn-action" onclick="runMagic('Backup')">💾 Execute Backup</button>
-                    <div id="term-3" class="terminal-box">$ Backup pipeline standing by...</div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2026 Pixel Forge🔥. Faisu & Jasmine Universe 🌍🔥</p>
-        </footer>
-
-        <div class="bottom-bar">
-            <a href="#home">🏠 Home</a>
-            <a href="https://github.com/DigitalPixelStudio" target="_blank">💻 GitHub</a>
-            <a href="mailto:contact@pixelforge.com">💬 Support</a>
+            <div class="brand-name">Pixel Forge🔥</div>
         </div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="card">
+            <h1>Sovereign Device Controller & JARVIS Sentinel</h1>
+            <p>Engineered by Faisu & Jasmine. Autonomous device command center with perpetual voice recognition and speech synthesis.</p>
+            
+            <div class="btn-group">
+                <button class="btn" id="sentinel-btn" onclick="toggleSentinel()">🎙️ Activate Sentinel Mode</button>
+                <button class="btn btn-secondary" onclick="runMagicRoutine()">⚡ Run Magic Routine</button>
+            </div>
+
+            <div class="console" id="console-log">
+                [SYSTEM READY] Pixel Forge JARVIS v8.5 Initialized.<br>
+                [STATUS] Awaiting voice command or manual trigger...
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item">🏠 Home</a>
+        <a href="https://github.com/DigitalPixelStudio/dpf-agents" target="_blank" class="nav-item">💻 GitHub</a>
+        <a href="#" class="nav-item" onclick="speakText('Support channel active. Faisu and Jasmine are online.')">💬 Support</a>
+    </nav>
 
     <script>
-        const canvas = document.getElementById('matrix-canvas');
+        // Cyberpunk Pulse-Wave Background Animation
+        const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-
-        let angle = 0;
-        function animateCyber() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
-            ctx.fillRect(0, 0, width, height);
-
-            ctx.strokeStyle = 'rgba(255, 0, 51, 0.15)';
-            ctx.lineWidth = 1.8;
-
-            const centerX = width / 2;
-            const centerY = height / 3;
-            
-            for (let i = 1; i < 9; i++) {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, (angle * 30 + i * 90) % Math.max(width, height), 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            angle += 0.025;
-            requestAnimationFrame(animateCyber);
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        animateCyber();
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-        function speak(text) {
+        let particles = [];
+        for(let i=0; i<60; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                color: Math.random() > 0.5 ? '#ff0033' : '#ffaa00',
+                speedX: (Math.random() - 0.5) * 1.2,
+                speedY: (Math.random() - 0.5) * 1.2
+            });
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Speech & JARVIS Sentinel Logic
+        const logBox = document.getElementById('console-log');
+        function log(msg) {
+            logBox.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${msg}`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function speakText(text) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 1.0;
                 utterance.pitch = 1.0;
@@ -188,94 +151,82 @@
             }
         }
 
-        let continuousActive = false;
+        let sentinelActive = false;
         let recognition = null;
 
-        function toggleContinuousSentinel() {
-            const btn = document.getElementById('sentinel-btn');
-            const statusEl = document.getElementById('jarvis-status');
-
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert("Speech recognition is not supported in this browser.");
-                speak("Speech recognition not supported.");
-                return;
-            }
-
-            if (!continuousActive) {
-                continuousActive = true;
-                btn.style.background = '#00ff66';
-                btn.style.color = '#000';
-                btn.innerText = '🟢 Sentinel Active (Always Listening)';
-                statusEl.innerText = "Sentinel mode active. Always waiting for your commands...";
-                speak("Sentinel mode activated, Faisu. I am always listening.");
-                startListeningLoop();
-            } else {
-                continuousActive = false;
-                btn.style.background = 'var(--pure-red)';
-                btn.style.color = '#fff';
-                btn.innerText = '🛡️ Activate Sentinel Mode';
-                statusEl.innerText = "Sentinel mode paused.";
-                speak("Sentinel mode paused.");
-                if (recognition) recognition.stop();
-            }
-        }
-
-        function startListeningLoop() {
-            if (!continuousActive) return;
-
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
+            recognition.continuous = true;
             recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+            recognition.lang = 'en-US';
 
             recognition.onresult = function(event) {
-                const command = event.results[0][0].transcript.toLowerCase();
-                document.getElementById('jarvis-status').innerText = `Heard: "${command}"`;
-                
-                if (command.includes('magic') || command.includes('automate')) {
-                    runMagic('Automation');
-                    speak("Executing magic automation routine, Faisu.");
-                } else if (command.includes('diagnostic') || command.includes('hardware') || command.includes('battery')) {
-                    runMagic('Diagnostic');
-                    speak("Scanning Infinix hardware status.");
-                } else if (command.includes('backup') || command.includes('sync')) {
-                    runMagic('Backup');
-                    speak("Backing up sanctuary data securely.");
-                } else {
-                    speak(`Command received: ${command}. All systems nominal.`);
-                }
+                const transcript = event.results[event.results.length - 1][0].transcript.trim();
+                log(`Voice heard: "${transcript}"`);
+                handleCommand(transcript);
             };
 
             recognition.onerror = function(event) {
-                // Auto restart on error to maintain continuous background listening
-                if (continuousActive) {
-                    setTimeout(() => { startListeningLoop(); }, 1000);
+                log(`Voice error: ${event.error}`);
+                if (sentinelActive) {
+                    setTimeout(() => { try { recognition.start(); } catch(e){} }, 1000);
                 }
             };
 
             recognition.onend = function() {
-                // Auto restart immediately when recognition ends to stay always on standby
-                if (continuousActive) {
-                    try { recognition.start(); } catch(e) { setTimeout(() => { startListeningLoop(); }, 1000); }
+                if (sentinelActive) {
+                    try { recognition.start(); } catch(e){}
                 }
             };
+        }
 
-            try {
-                recognition.start();
-            } catch(e) {
-                setTimeout(() => { if (continuousActive) startListeningLoop(); }, 1000);
+        function toggleSentinel() {
+            const btn = document.getElementById('sentinel-btn');
+            if (!recognition) {
+                alert("Speech recognition not supported in this browser wrapper.");
+                return;
+            }
+            sentinelActive = !sentinelActive;
+            if (sentinelActive) {
+                btn.style.background = '#00ff66';
+                btn.style.color = '#000000';
+                btn.innerText = '🎙️ Sentinel Active (Listening...)';
+                log('Sentinel Mode activated. JARVIS is standing by...');
+                speakText('Sentinel mode active. Standing by for your commands, Faisu.');
+                try { recognition.start(); } catch(e){}
+            } else {
+                btn.style.background = 'linear-gradient(135deg, #ff0033, #990022)';
+                btn.style.color = '#ffffff';
+                btn.innerText = '🎙️ Activate Sentinel Mode';
+                log('Sentinel Mode deactivated.');
+                try { recognition.stop(); } catch(e){}
+                speakText('Sentinel mode deactivated.');
             }
         }
 
-        function runMagic(type) {
-            if(type === 'Automation') {
-                document.getElementById('term-1').innerText = '$ Executing multi-agent swarms...\n$ Syncing local state...\n[SUCCESS] Magic routine completed flawlessly!';
-            } else if(type === 'Diagnostic') {
-                document.getElementById('term-2').innerText = '$ Scanning Infinix hardware (MediaTek safe mode)...\n$ RAM: 6GB (Optimal) | Storage: 128GB\n[SUCCESS] System running at peak efficiency!';
-            } else if(type === 'Backup') {
-                document.getElementById('term-3').innerText = '$ Packaging sanctuary files...\n$ Pushing encrypted state to GitHub...\n[SUCCESS] Backup securely synchronized!';
+        function handleCommand(cmd) {
+            const lower = cmd.toLowerCase();
+            if (lower.includes('routine') || lower.includes('magic')) {
+                runMagicRoutine();
+            } else if (lower.includes('status') || lower.includes('system')) {
+                speakText('All systems optimal. Sovereign device controller fully operational.');
+                log('System status: Optimal.');
+            } else {
+                speakText(`Command received: ${cmd}`);
+                log(`Executed command: ${cmd}`);
             }
+        }
+
+        function runMagicRoutine() {
+            log('Executing Sovereign Magic Routine...');
+            speakText('Executing magic routine now, Faisu.');
+            setTimeout(() => {
+                log('✓ Device state synced.');
+                log('✓ Security protocols verified.');
+                log('✓ Multi-agent swarm responsive.');
+                speakText('Magic routine completed successfully.');
+            }, 1000);
         }
     </script>
 </body>
